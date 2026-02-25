@@ -45,23 +45,34 @@
 
             </ul>
           </li>
-          <!-- Home Link -->
-          <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
-          </li>
 
-          <!-- Predict Link -->
-          <li class="nav-item">
-            <a class="nav-link" href="/predict">Diagnosis</a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+              </li>
 
-          <!-- Button Style -->
-          <li class="nav-item ms-3">
-            <a href="/predict" class="btn btn-success btn-sm px-3">
-              Try Now
-            </a>
-          </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('predict_page') }}">Diagnosis</a>
+              </li>
 
+              {% if session.get('user') %}
+              <li class="nav-item">
+                <span class="nav-link text-success">
+                  👋 {{ session.get('user') }}
+                </span>
+              </li>
+              <li class="nav-item">
+                <a class="btn btn-outline-light ms-2" href="{{ url_for('logout') }}">
+                  Logout
+                </a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="btn btn-success ms-2" href="{{ url_for('login') }}">
+                  <i class="bi bi-box-arrow-in-right"></i> Login
+                </a>
+              </li>
+              {% endif %}
+            </ul>
         </ul>
       </div>
     </div>
@@ -148,6 +159,59 @@
           }
         });
       </script>
+      <!-- For Dynsmic Progress Bar -->
+      <!-- <script>
+        function showLoader() {
+          document.getElementById("loadingOverlay").style.display = "flex";
+
+          const circle = document.querySelector(".progress-ring-fill");
+          const percentText = document.getElementById("progressPercent");
+
+          const radius = 65;
+          const circumference = 2 * Math.PI * radius;
+
+          circle.style.strokeDasharray = circumference;
+          circle.style.strokeDashoffset = circumference;
+
+          let percent = 0;
+
+          const interval = setInterval(() => {
+            percent += 2;
+
+            const offset = circumference - (percent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            percentText.textContent = percent + "%";
+
+            if (percent >= 100) {
+              clearInterval(interval);
+            }
+          }, 40);
+        }
+      </script> -->
+      <script>
+        function showLeafLoader() {
+
+          document.getElementById("leafLoaderOverlay").style.display = "flex";
+
+          let percent = 0;
+          const fill = document.getElementById("leafFill");
+          const text = document.getElementById("percentText");
+
+          const interval = setInterval(() => {
+
+            percent++;
+
+            fill.style.height = percent + "%";
+            text.innerText = percent + "%";
+
+            if (percent >= 100) {
+              clearInterval(interval);
+            }
+
+          }, 25);
+        }
+      </script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 <!-- PROFESSIONAL FOOTER -->
@@ -171,6 +235,7 @@
         <ul class="footer-links">
           <li><a href="/">Home</a></li>
           <li><a href="/predict">Diagnosis</a></li>
+          <li><a href="/login">Login</a></li>
           <li><a href="#">About Project</a></li>
           <li><a href="#">Contact</a></li>
         </ul>
