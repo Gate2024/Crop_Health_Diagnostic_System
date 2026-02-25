@@ -1,0 +1,47 @@
+# ----------------------
+# Python cache files
+# ----------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ----------------------
+# Virtual environment
+# ----------------------
+.venv/
+venv/
+env/
+
+# ----------------------
+# Environment variables
+# ----------------------
+.env
+
+# ----------------------
+# Jupyter Notebook
+# ----------------------
+.ipynb_checkpoints/
+
+# ----------------------
+# Model files (optional - remove if you want to upload model)
+# ----------------------
+*.pkl
+*.joblib
+*.h5
+
+# ----------------------
+# VS Code
+# ----------------------
+.vscode/
+
+# ----------------------
+# System files
+# ----------------------
+.DS_Store
+Thumbs.db
+
+# ----------------------
+# Logs
+# ----------------------
+*.log

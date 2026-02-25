@@ -1,0 +1,452 @@
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Animated Background Frames */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    animation: changeFrame 20s linear infinite;
+}
+
+/* Dark overlay for readability */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: -1;
+}
+
+@keyframes changeFrame {
+    0% {
+        background-image: url('../images/crop_background1.jpg');
+    }
+    25% {
+        background-image: url('../images/crop_background6.jpeg');
+    }
+    50% {
+        background-image: url('../images/crop_background3.jpg');
+    }
+    75% {
+        background-image: url('../images/crop_background4.jpg');
+    }
+    100% {
+        background-image: url('../images/crop_background1.jpg');
+    }
+}
+
+/* Navbar */
+.navbar{
+  transition:0.3s ease;
+  background:transparent;
+}
+
+.navbar.scrolled{
+  background:#28fae8;
+  box-shadow:0 5px 20px rgba(0,0,0,0.2);
+}
+
+.nav-link{
+  color:white !important;
+}
+
+/* Hero Section */
+.hero-section{
+  height:60vh;
+  background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+  url("../images/crop_background1.jpg");
+  background-size:cover;
+  background-position:center;
+  color:white;
+}
+
+/* Upload Card */
+.upload-card{
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(10px);
+  border-radius:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.08);
+}
+
+/* Buttons */
+.gradient-btn{
+  background:linear-gradient(45deg,#00c853,#1de9b6);
+  border:none;
+  color:white;
+  font-weight:600;
+  border-radius:10px;
+}
+
+.gradient-btn:hover{
+  opacity:0.9;
+}
+
+/* Result Card */
+.result-card{
+  background:white;
+  border-radius:20px;
+  box-shadow:0 20px 50px rgba(0,0,0,0.08);
+}
+
+.result-image{
+  width:100%;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* Info Box */
+.info-box{
+  background:#f8f9fa;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+/* Footer */
+.footer-section{
+  background:#111;
+  color:#aaa;
+}
+
+/* Preview */
+#previewImg{
+  max-height:250px;
+  display:none;
+}
+
+/* Spinner */
+.spinner-overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+ /* All main Content In Text White  */
+.container,
+.container h1,
+.container h3,
+.container h5,
+.container p {
+    color: white;
+}
+h1, h3, h5 {
+    color: white;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* Force result text to dark color */
+.result-card,
+.result-card h1,
+.result-card h3,
+.result-card h5,
+.result-card p {
+    color: #212529 !important;
+}
+/* Continously Changing Slide  */
+.landing-hero {
+    height: 100vh;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    animation: changeFrame 20s linear infinite;
+}
+
+.hero-overlay {
+    background: rgba(0,0,0,0.6);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.how-it-works {
+    background: rgba(0,0,0,0.7);
+}
+
+/* ===== DASHBOARD PAGE ===== */
+.dashboard-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 120px 40px;
+    min-height: 100vh;
+}
+
+.dashboard-left,
+.dashboard-right {
+    width: 420px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.upload-box {
+    width: 100%;
+    border: 2px dashed #28a745;
+    padding: 30px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.upload-box:hover {
+    background: #f1f8e9;
+}
+
+.preview-image {
+    width: 100%;
+    border-radius: 15px;
+    margin-top: 20px;
+    display: none;
+}
+
+.detect-btn {
+    width: 100%;
+    padding: 12px;
+    background: #198754;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+.info-card {
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+.success { background: #e8f5e9; }
+.confidence { background: #e3f2fd; }
+.advice { background: #fff3e0; }
+
+.analysis-placeholder {
+    text-align: center;
+    color: #28ef71;
+}
+
+/* Responsive */
+@media(max-width: 992px){
+    .dashboard-wrapper{
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+
+/* ===== PROFESSIONAL FOOTER ===== */
+
+.footer-modern {
+    background: #0f2027;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #ddd;
+}
+
+.footer-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.footer-heading {
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.footer-text {
+    font-size: 14px;
+    color: #ccc;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    text-decoration: none;
+    color: #ccc;
+    transition: 0.3s;
+}
+
+.footer-links a:hover {
+    color: #1de9b6;
+    padding-left: 5px;
+}
+
+.footer-social a {
+    color: #ccc;
+    font-size: 20px;
+    margin-right: 12px;
+    transition: 0.3s;
+}
+
+.footer-social a:hover {
+    color: #1de9b6;
+    transform: scale(1.2);
+}
+
+.footer-bottom {
+    background: rgba(0,0,0,0.3);
+    font-size: 14px;
+}
+
+/* ========================= */
+/* NAVBAR SCROLL EFFECT */
+/* ========================= */
+
+.navbar {
+    transition: all 0.4s ease;
+    background: transparent;
+    padding: 20px 0;
+}
+
+.navbar.scrolled {
+    background: rgba(0, 0, 0, 0.9) !important;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 12px 0;
+    backdrop-filter: blur(10px);
+}
+
+
+
+/* ============================= */
+/* GLASS EFFECT FORCE OVERRIDE */
+/* ============================= */
+
+.dashboard-left,
+.dashboard-right {
+
+    background: rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+
+    transition: 0.4s ease;
+}
+
+.dashboard-left:hover,
+.dashboard-right:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 40px 70px rgba(0, 0, 0, 0.6);
+}
+
+/* Professional Font Color */
+.dashboard-left h4,
+.dashboard-left p,
+.dashboard-right h4,
+.dashboard-right p {
+    color: rgba(11, 10, 10, 0.95) !important;
+}
+
+/* Strong Titles */
+.dashboard-left h3,
+.dashboard-right h3 {
+    color: #0d0d0d !important;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Make Upload Boxes Glass Too */
+.upload-box {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 2px dashed #00ff99;
+    transition: 0.3s ease;
+}
+
+.upload-box:hover {
+    background: rgba(0, 255, 153, 0.08) !important;
+    border-color: #00ffaa;
+    transform: scale(1.03);
+}
+
+/* Improve Analyze Button */
+.gradient-btn {
+    background: linear-gradient(135deg, #00c853, #00e676);
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.info-card.fertilizer {
+    background: rgba(255, 255, 255, 0.9);
+    border-left: 5px solid #28a745;
+    transition: 0.3s ease;
+}
+
+.product-links a {
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+/* ================= FARMER MODE UI ================= */
+
+.farmer-card {
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+.big-text {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.result-healthy {
+    background: #e8f5e9;
+    border-left: 8px solid #2e7d32;
+}
+
+.result-disease {
+    background: #ffebee;
+    border-left: 8px solid #c62828;
+}
+
+.icon-large {
+    font-size: 28px;
+    margin-right: 10px;
+}
+
+.simple-label {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+    .big-text {
+        font-size: 20px;
+    }
+}
+
+/* body::before {
+    z-index: -1;
+} */
+
