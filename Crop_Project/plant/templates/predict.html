@@ -10,7 +10,7 @@
         <p class="text-muted">Upload an image of your plant leaf for AI analysis</p>
 
         <form action="{{ url_for('upload', lang=lang) }}" method="POST" enctype="multipart/form-data"
-            onsubmit="showSpinner()">
+            onsubmit="showLeafLoader()">
 
             <!-- Hidden Upload Input -->
             <input type="file" id="uploadInput" name="img" accept="image/*" hidden onchange="previewImage(this)">
@@ -165,5 +165,69 @@
 
     </div>
 </div>
+<!-- CROP LOADING OVERLAY -->
+<!-- <div id="loadingOverlay" class="loading-overlay">
+    <div class="loader-container">
+        <svg class="progress-ring" width="150" height="150">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00c853" />
+                    <stop offset="100%" stop-color="#1de9b6" />
+                </linearGradient>
+            </defs>
+            <circle class="progress-ring-bg" cx="75" cy="75" r="65" />
+            <circle class="progress-ring-fill" cx="75" cy="75" r="65" />
+        </svg>
+        <div class="progress-text">
+            <span id="progressPercent">0%</span>
+        </div>
+        <p class="loading-text">Analyzing Crop...</p>
+    </div>
+</div> -->
 
+
+<!-- 🌿 LEAF LOADER -->
+<div id="leafLoaderOverlay" class="leaf-loader-overlay">
+
+    <div class="leaf-loader-container">
+
+        <div class="leaf-wrapper">
+
+            <!-- Fill Layer -->
+            <div id="leafFill" class="leaf-fill"></div>
+
+            <!-- Leaf Image -->
+            <img src="{{ url_for('static', filename='images/leaf.png') }}" class="leaf-img">
+
+            <!-- Percentage -->
+            <div class="leaf-percent">
+                <span id="percentText">0%</span>
+            </div>
+
+        </div>
+
+        <p class="leaf-text">Analyzing Crop...</p>
+
+    </div>
+</div>
 {% endblock %}
+
+<!-- CROP LOADING OVERLAY -->
+<!-- <div id="loadingOverlay" class="loading-overlay">
+    <div class="loader-container">
+        <svg class="progress-ring" width="150" height="150">
+            <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#00c853" />
+                    <stop offset="100%" stop-color="#1de9b6" />
+                </linearGradient>
+            </defs>
+            <circle class="progress-ring-bg" cx="75" cy="75" r="65" />
+            <circle class="progress-ring-fill" cx="75" cy="75" r="65" />
+        </svg>
+        <div class="progress-text">
+            <span id="progressPercent">0%</span>
+        </div>
+        <p class="loading-text">Analyzing Crop...</p>
+    </div>
+</div> -->

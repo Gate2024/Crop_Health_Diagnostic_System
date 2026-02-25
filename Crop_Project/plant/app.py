@@ -145,7 +145,7 @@
 # if __name__ == "__main__":
 #     app.run(debug=True)
 
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, session
 import tensorflow as tf
 import numpy as np
 import os
@@ -154,10 +154,13 @@ import json
 import cv2
 from tensorflow.keras.applications.efficientnet import preprocess_input
 
-# ================================
-# APP CONFIG
-# ================================
+# ===============================
+# CREATE FLASK APP FIRST
+# ===============================
 app = Flask(__name__)
+
+# ✅ Secret key MUST be after app creation
+app.secret_key = "crop_health_secret_key"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "plant_disease.keras")
@@ -307,6 +310,10 @@ def home():
 
 @app.route("/predict")
 def predict_page():
+
+    if "user" not in session:
+        return redirect(url_for("login"))
+
     lang = get_language()
     return render_template("predict.html", lang=lang)
 
@@ -338,11 +345,38 @@ def upload():
         lang=lang   # 🔥 VERY IMPORTANT
     )
 
-
+#  For Login
 @app.route("/uploading_images/<filename>")
 def uploaded_file(filename):
     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
 
+
+@app.route("/login", methods=["GET","POST"])
+def login():
+
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+
+        # Simple Demo Login
+        if username == "admin" and password == "1234":
+            session["user"] = username
+            return redirect(url_for("home"))
+        else:
+            return render_template("login.html", error="Invalid Username or Password")
+
+    return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("home"))
+
+# @app.route("/predict")
+# def predict_page():
+#     if "user" not in session:
+#         return redirect(url_for("login"))
+#     return render_template("predict.html")
 # ================================
 # RUN SERVER
 # ================================
