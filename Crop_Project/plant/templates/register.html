@@ -5,7 +5,7 @@
 
     <div class="login-card">
 
-        <h2 class="text-center mb-4">🌱 Login in Your Account</h2>
+        <h2 class="text-center mb-4">🌱 Create Account</h2>
 
         {% if error %}
         <div class="alert alert-danger alert-dismissible fade show">
@@ -23,11 +23,19 @@
 
         <form method="POST">
 
+            <!-- Username -->
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                <input type="text" name="username" class="form-control" placeholder="Enter Username" required>
+                <input type="text" name="username" class="form-control" placeholder="Username" required>
             </div>
 
+            <!-- Email -->
+            <div class="mb-3 input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" name="email" class="form-control" placeholder="Email" required>
+            </div>
+
+            <!-- Password -->
             <div class="mb-3 input-group">
                 <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
                 <input type="password" name="password" id="password" class="form-control" placeholder="Enter Password"
@@ -37,20 +45,21 @@
                 </button>
             </div>
 
-            <div class="mb-3 d-flex justify-content-between">
-                <div>
-                    <input type="checkbox"> Remember me
-                </div>
-                <a href="{{ url_for('forgot_password') }}" class="text-white text-decoration-none">Forgot password?</a>
+            <!-- Role -->
+            <div class="mb-3">
+                <select name="role" class="form-control">
+                    <option value="farmer">Farmer</option>
+                    <option value="admin">Admin</option>
+                </select>
             </div>
 
-            <button class="btn btn-success w-100">Login</button>
+            <button class="btn btn-success w-100">Sign Up</button>
 
         </form>
 
         <p class="text-center mt-3">
-            Don't have account?
-            <a href="{{ url_for('register') }}" class="text-warning">Register</a>
+            Already have an account?
+            <a href="{{ url_for('login') }}" class="text-warning">Login</a>
         </p>
 
     </div>
