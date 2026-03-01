@@ -521,7 +521,7 @@ h5 {
 } */
 
 
-
+ /* Leaf Loader CSS */
 .leaf-loader-overlay {
     position: fixed;
     inset: 0;
@@ -616,4 +616,135 @@ h5 {
 
 .login-card .form-control::placeholder {
     color: #ddd;
+}
+
+/* =================  Forgot Password AUTH PAGES ================= */
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 85vh;
+}
+
+.auth-card {
+    width: 400px;
+    padding: 35px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 30px rgba(0, 255, 100, 0.15);
+    color: #fff;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.auth-header h2 {
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.plant-icon {
+    font-size: 30px;
+}
+
+.input-group-custom {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-group-custom input {
+    width: 100%;
+    padding: 12px 15px 12px 40px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    outline: none;
+    transition: 0.3s ease;
+}
+
+.input-group-custom input:focus {
+    background: rgba(0, 255, 100, 0.1);
+    border: 1px solid #28a745;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    font-size: 18px;
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: #28a745;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-auth:hover {
+    background: #218838;
+}
+
+.auth-footer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.auth-footer a {
+    color: #ffc107;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* ================= RESET PASSWORD PAGE ================= */
+
+.auth-subtitle {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.auth-card {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.input-group-custom input::placeholder {
+    color: #bbb;
+}
+
+.btn-auth {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.btn-auth:hover {
+    background: linear-gradient(135deg, #218838, #17a2b8);
+    transform: scale(1.02);
+    transition: 0.3s ease;
 }
