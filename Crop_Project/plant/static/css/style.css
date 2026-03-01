@@ -9,7 +9,7 @@ body {
 
 body {
     margin: 0;
-    padding: 0;
+    /* padding-top: 100px; */
     font-family: 'Segoe UI', sans-serif;
     background-size: cover;
     background-position: center;
@@ -17,14 +17,6 @@ body {
     animation: changeFrame 20s linear infinite;
 }
 
-/* Dark overlay for readability */
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: -1;
-}
 
 @keyframes changeFrame {
     0% {
@@ -63,10 +55,36 @@ body::before {
     color: white !important;
 }
 
+.admin-badge {
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    color: black !important;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.admin-badge:hover {
+    opacity: 0.85;
+}
+
+/* ================= TRANSPARENT NAVBAR =================
+
+#mainNavbar {
+    transition: all 0.4s ease;
+    background: transparent;
+    padding: 20px 0;
+}
+
+#mainNavbar.scrolled {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 12px 0;
+} */
 /* Hero Section */
 .hero-section {
     height: 60vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    background: linear-gradient(rgba(58, 56, 56, 0.6), rgba(0, 0, 0, 0.6)),
         url("../images/crop_background1.jpg");
     background-size: cover;
     background-position: center;
@@ -167,6 +185,11 @@ h5 {
 }
 
 /* Continously Changing Slide  */
+.landing-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
 .landing-hero {
     height: 100vh;
     position: relative;
@@ -175,8 +198,15 @@ h5 {
     animation: changeFrame 20s linear infinite;
 }
 
+.landing-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .hero-overlay {
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.5);
     height: 100%;
     display: flex;
     align-items: center;
@@ -521,7 +551,7 @@ h5 {
 } */
 
 
- /* Leaf Loader CSS */
+/* Leaf Loader CSS */
 .leaf-loader-overlay {
     position: fixed;
     inset: 0;
@@ -597,7 +627,7 @@ h5 {
     padding: 40px;
     border-radius: 20px;
     backdrop-filter: blur(15px);
-    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
     width: 150%;
     max-width: 600px;
     color: white;
@@ -609,7 +639,7 @@ h5 {
 
 .login-card .form-control,
 .login-card .input-group-text {
-    background: rgba(255,255,255,0.2);
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
 }
@@ -726,6 +756,7 @@ h5 {
         opacity: 0;
         transform: translateY(15px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -747,4 +778,389 @@ h5 {
     background: linear-gradient(135deg, #218838, #17a2b8);
     transform: scale(1.02);
     transition: 0.3s ease;
+}
+
+
+/* ================= ADMIN DASHBOARD ================= */
+
+.admin-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.admin-card {
+    width: 95%;
+    max-width: 1000px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 35px rgba(0, 255, 100, 0.15);
+    color: #fff;
+}
+
+.admin-title {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 600;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.admin-table thead {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: #fff;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px;
+    text-align: center;
+}
+
+.admin-table tbody tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: 0.3s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: rgba(0, 255, 100, 0.08);
+}
+
+.status-verified {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.status-unverified {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Responsive Table */
+@media (max-width: 768px) {
+    .admin-card {
+        padding: 15px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+}
+
+/* ================= ADMIN STATS ================= */
+
+.admin-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: rgba(0, 255, 100, 0.1);
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin: 5px;
+    font-weight: 600;
+    color: #28a745;
+}
+
+/* ================= ADMIN UPGRADE ================= */
+
+.admin-wrapper {
+    width: 95%;
+    max-width: 1100px;
+    margin: 140px auto 40px auto;
+    /* top right bottom left */
+    color: white;
+}
+
+.admin-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.admin-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    flex: 1;
+    margin: 10px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(0, 255, 100, 0.08);
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 28px;
+    color: #28a745;
+}
+
+.admin-table-card {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th {
+    background: #28a745;
+    padding: 12px;
+}
+
+.admin-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-table tr:hover {
+    background: rgba(0, 255, 100, 0.05);
+}
+
+.badge-admin {
+    background: #ffc107;
+    padding: 5px 10px;
+    border-radius: 8px;
+    color: black;
+    font-weight: bold;
+}
+
+.badge-farmer {
+    background: #17a2b8;
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.btn-delete {
+    background: #dc3545;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+    margin-right: 5px;
+}
+
+.btn-role {
+    background: #007bff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+}
+
+.btn-delete:hover {
+    background: #c82333;
+}
+
+.btn-role:hover {
+    background: #0056b3;
+}
+
+/* ================= GLOBAL PAGE LOADER ================= */
+
+.global-loader {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.4s ease;
+}
+
+.loader-box {
+    text-align: center;
+    color: #00e676;
+}
+
+.leaf-spin {
+    font-size: 60px;
+    animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader-box p {
+    margin-top: 15px;
+    font-size: 18px;
+    color: #81c784;
+}
+
+/* ============================= */
+/* Admin Search Form Styling */
+/* ============================= */
+
+.admin-search-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-search-form input,
+.admin-search-form select {
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    backdrop-filter: blur(6px);
+}
+
+.admin-search-form input::placeholder {
+    color: #ddd;
+}
+
+.search-group {
+    flex: 1;
+}
+
+.filter-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-apply {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.btn-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================= */
+/* Improved Pagination */
+/* ============================= */
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.page-btn {
+    min-width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+    background: #28a745;
+    transform: translateY(-2px);
+}
+
+.active-page {
+    background: #28a745;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);
+}
+
+.nav-btn {
+    font-size: 18px;
+}
+
+.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ============================= */
+/* Success Page Styling */
+/* ============================= */
+
+.success-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.success-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    width: 400px;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.success-icon {
+    font-size: 50px;
+    color: #28a745;
+    margin-bottom: 20px;
+}
+
+.success-card h2 {
+    margin-bottom: 10px;
+}
+
+.success-card p {
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.success-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.success-btn:hover {
+    transform: translateY(-3px);
 }

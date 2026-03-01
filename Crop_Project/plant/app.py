@@ -158,6 +158,7 @@ from werkzeug.security import generate_password_hash
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+
 # ===============================
 # CREATE FLASK APP FIRST
 # ===============================
@@ -168,11 +169,12 @@ app.secret_key = "crop_health_secret_key"
 
 # ================= EMAIL CONFIGURATION =================
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'narayanadhude01@gmail.com'
-app.config['MAIL_PASSWORD'] = 'oinbeyzgufdrqzqy'
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
+app.config["MAIL_USE_SSL"] = False
+app.config["MAIL_USERNAME"] = "krushimitraai2026@gmail.com"
+app.config["MAIL_PASSWORD"] = "iqsndrzovoconyta"
 
 mail = Mail(app)
 
@@ -212,6 +214,7 @@ class_names = sorted([item["name"] for item in plant_disease_list])
 print("JSON Loaded Successfully ✅")
 print("JSON Loaded Successfully ✅")
 
+
 # ================================
 # LEAF VALIDATION USING OPENCV
 # ================================
@@ -234,6 +237,7 @@ def is_leaf(image_path):
 
     return True
 
+
 # ================================
 # IMAGE PREPROCESSING (IMPORTANT FIX)
 # ================================
@@ -246,6 +250,7 @@ def preprocess_image(image_path):
     img_array = preprocess_input(img_array)
 
     return img_array
+
 
 # ================================
 # PREDICTION FUNCTION
@@ -260,7 +265,7 @@ def predict_disease(image_path):
             "cure": "Please upload a clear green plant leaf image.",
             "confidence": 0,
             "fertilizer": "Not Applicable",
-            "products": {}
+            "products": {},
         }
 
     # Step 2: Preprocess
@@ -284,26 +289,26 @@ def predict_disease(image_path):
             "cure": "Check model and JSON mapping.",
             "confidence": 0,
             "fertilizer": "Not Available",
-            "products": {}
+            "products": {},
         }
 
     return {
-        
-    "name": disease_info["name"],
-    "cause": disease_info["cause"],
-    "cure": disease_info["cure"],
-    "confidence": round(confidence, 2),
-    "translations": disease_info.get("translations", {}),
-    "fertilizer": disease_info.get("fertilizer", "Consult Agronomist"),
-        "products": disease_info.get("products", {})
+        "name": disease_info["name"],
+        "cause": disease_info["cause"],
+        "cure": disease_info["cure"],
+        "confidence": round(confidence, 2),
+        "translations": disease_info.get("translations", {}),
+        "fertilizer": disease_info.get("fertilizer", "Consult Agronomist"),
+        "products": disease_info.get("products", {}),
     }
 
-# For Language Translation 
+
+# For Language Translation
 def get_language():
     lang = request.args.get("lang", "en")
     if lang not in ["en", "hi", "mr"]:
         return "en"
-    return lang    
+    return lang
 
 
 def init_db():
@@ -323,7 +328,7 @@ def init_db():
     conn.commit()
     conn.close()
 
-    
+
 # ================================
 # ROUTES
 # ================================
@@ -359,7 +364,7 @@ def predict_page():
 @app.route("/upload/", methods=["POST"])
 def upload():
 
-    lang = get_language()   # 🔥 Get language first
+    lang = get_language()  # 🔥 Get language first
 
     if "img" not in request.files:
         return redirect(url_for("predict_page", lang=lang))
@@ -380,8 +385,9 @@ def upload():
         result=True,
         imagepath=url_for("uploaded_file", filename=unique_filename),
         prediction=prediction,
-        lang=lang   # 🔥 VERY IMPORTANT
+        lang=lang,  # 🔥 VERY IMPORTANT
     )
+
 
 #  For Login
 @app.route("/uploading_images/<filename>")
@@ -409,22 +415,29 @@ def login():
             # 🔐 Block unverified users
             if user[7] == 0:
                 return render_template(
-                    "login.html",
-                    error="Please verify your email before logging in."
+                    "login.html", error="Please verify your email before logging in."
                 )
 
             session["user"] = user[1]
             session["role"] = user[4]
-            return redirect(url_for("home"))
+
+            # 🔥 Role-based redirect
+            if user[4] == "admin":
+                return redirect(url_for("admin_dashboard"))
+            else:
+                return redirect(url_for("home"))
 
         else:
             return render_template("login.html", error="Invalid Username or Password")
 
     return render_template("login.html")
+
+
 @app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect(url_for("home"))
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -443,7 +456,7 @@ def register():
 
             cursor.execute(
                 "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)",
-                (username, email, hashed_password, role)
+                (username, email, hashed_password, role),
             )
 
             conn.commit()
@@ -451,18 +464,14 @@ def register():
 
             # ================= EMAIL VERIFICATION =================
 
-            token = serializer.dumps(email, salt='email-confirm')
+            token = serializer.dumps(email, salt="email-confirm")
 
-            verification_link = url_for(
-                'verify_email',
-                token=token,
-                _external=True
-            )
+            verification_link = url_for("verify_email", token=token, _external=True)
 
             msg = Message(
-                'Verify Your Email - Crop Health Diagnostic System',
-                sender=app.config['MAIL_USERNAME'],
-                recipients=[email]
+                "Verify Your Email - Crop Health Diagnostic System",
+                sender=app.config["MAIL_USERNAME"],
+                recipients=[email],
             )
 
             msg.body = f"""
@@ -483,23 +492,23 @@ This link will expire in 30 minutes.
 
             return render_template(
                 "register.html",
-                success="Registration successful! Please check your email to verify your account."
+                success="Registration successful! Please check your email to verify your account.",
             )
 
         except sqlite3.IntegrityError:
             return render_template(
-                "register.html",
-                error="Username or Email already exists"
+                "register.html", error="Username or Email already exists"
             )
 
     return render_template("register.html")
 
+
 #  Email verification route
-@app.route('/verify/<token>')
+@app.route("/verify/<token>")
 def verify_email(token):
     try:
         # Decode the token (valid for 30 minutes = 1800 seconds)
-        email = serializer.loads(token, salt='email-confirm', max_age=1800)
+        email = serializer.loads(token, salt="email-confirm", max_age=1800)
     except:
         return "Verification link is invalid or has expired."
 
@@ -507,20 +516,23 @@ def verify_email(token):
         conn = sqlite3.connect("users.db")
         cursor = conn.cursor()
 
-        cursor.execute(
-            "UPDATE users SET is_verified = 1 WHERE email = ?",
-            (email,)
-        )
+        cursor.execute("UPDATE users SET is_verified = 1 WHERE email = ?", (email,))
 
         conn.commit()
         conn.close()
 
-        return "Email verified successfully! You can now login."
+        return render_template(
+            "success.html",
+            title="Email Verified Successfully",
+            message="Your account has been activated. You can now login.",
+            redirect_url=url_for("login"),
+            button_text="Login Now",
+        )
 
     except Exception as e:
         return "Database error occurred during verification."
-    
-    
+
+
 @app.route("/forgot_password", methods=["GET", "POST"])
 def forgot_password():
 
@@ -537,18 +549,14 @@ def forgot_password():
 
         # Even if email not found, show same message (security reason)
         if user:
-            token = serializer.dumps(email, salt='password-reset')
+            token = serializer.dumps(email, salt="password-reset")
 
-            reset_link = url_for(
-                'reset_password',
-                token=token,
-                _external=True
-            )
+            reset_link = url_for("reset_password", token=token, _external=True)
 
             msg = Message(
-                'Reset Your Password - Crop Health Diagnostic System',
-                sender=app.config['MAIL_USERNAME'],
-                recipients=[email]
+                "Reset Your Password - Crop Health Diagnostic System",
+                sender=app.config["MAIL_USERNAME"],
+                recipients=[email],
             )
 
             msg.body = f"""
@@ -565,16 +573,17 @@ This link will expire in 30 minutes.
 
         return render_template(
             "forgot_password.html",
-            success="If this email is registered, a reset link has been sent."
+            success="If this email is registered, a reset link has been sent.",
         )
 
     return render_template("forgot_password.html")
+
 
 @app.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token):
 
     try:
-        email = serializer.loads(token, salt='password-reset', max_age=1800)
+        email = serializer.loads(token, salt="password-reset", max_age=1800)
     except:
         return "Reset link is invalid or has expired."
 
@@ -586,16 +595,188 @@ def reset_password(token):
         cursor = conn.cursor()
 
         cursor.execute(
-            "UPDATE users SET password=? WHERE email=?",
-            (hashed_password, email)
+            "UPDATE users SET password=? WHERE email=?", (hashed_password, email)
         )
 
         conn.commit()
         conn.close()
 
-        return "Password updated successfully! You can now login."
+        return render_template(
+            "success.html",
+            title="Password Updated Successfully",
+            message="Your password has been changed. You can now login securely.",
+            redirect_url=url_for("login"),
+            button_text="Go to Login",
+        )
 
     return render_template("reset_password.html")
+
+
+@app.route("/admin")
+def admin_dashboard():
+
+    # 🔐 Must be logged in
+    if "user" not in session:
+        return redirect(url_for("login"))
+
+    # 🔐 Must be admin
+    if session.get("role") != "admin":
+        return "Access Denied. Admins only."
+
+    conn = sqlite3.connect("users.db", timeout=10)
+    # conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Pagination
+    page = request.args.get("page", 1, type=int)
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    # Search & Filter
+    search = request.args.get("search", "")
+    role_filter = request.args.get("role", "")
+    status_filter = request.args.get("status", "")
+
+    base_query = "SELECT id, username, email, role, is_verified FROM users WHERE 1=1"
+    params = []
+
+    if search:
+        base_query += " AND (username LIKE ? OR email LIKE ?)"
+        params.extend([f"%{search}%", f"%{search}%"])
+
+    if role_filter:
+        base_query += " AND role = ?"
+        params.append(role_filter)
+
+    if status_filter == "verified":
+        base_query += " AND is_verified = 1"
+    elif status_filter == "unverified":
+        base_query += " AND is_verified = 0"
+
+    # Total count for pagination
+    count_query = f"SELECT COUNT(*) FROM ({base_query})"
+    cursor.execute(count_query, params)
+    total_filtered_users = cursor.fetchone()[0]
+    total_pages = (total_filtered_users + per_page - 1) // per_page
+
+    # Apply limit
+    final_query = base_query + " LIMIT ? OFFSET ?"
+    params.extend([per_page, offset])
+    cursor.execute(final_query, params)
+    users = cursor.fetchall()
+
+    # Stats (same as before)
+    cursor.execute("SELECT COUNT(*) FROM users")
+    total_users = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM users WHERE is_verified = 1")
+    verified_users = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM users WHERE is_verified = 0")
+    unverified_users = cursor.fetchone()[0]
+
+    conn.close()
+
+    return render_template(
+        "admin_dashboard.html",
+        users=users,
+        total_users=total_users,
+        verified_users=verified_users,
+        unverified_users=unverified_users,
+        page=page,
+        total_pages=total_pages,
+        search=search,
+        role_filter=role_filter,
+        status_filter=status_filter,
+    )
+
+
+@app.route("/admin-live-search")
+def admin_live_search():
+
+    if "user" not in session or session.get("role") != "admin":
+        return {"error": "Unauthorized"}, 403
+
+    search = request.args.get("search", "")
+    page = request.args.get("page", 1, type=int)
+
+    per_page = 5
+    offset = (page - 1) * per_page
+
+    conn = sqlite3.connect("users.db", timeout=10)
+    cursor = conn.cursor()
+
+    if search:
+        query = """
+            SELECT id, username, email, role, is_verified
+            FROM users
+            WHERE username LIKE ? OR email LIKE ?
+            LIMIT ? OFFSET ?
+        """
+        cursor.execute(query, (f"%{search}%", f"%{search}%", per_page, offset))
+    else:
+        query = """
+            SELECT id, username, email, role, is_verified
+            FROM users
+            LIMIT ? OFFSET ?
+        """
+        cursor.execute(query, (per_page, offset))
+
+    users = cursor.fetchall()
+    conn.close()
+
+    user_list = []
+    for u in users:
+        user_list.append(
+            {
+                "id": u[0],
+                "username": u[1],
+                "email": u[2],
+                "role": u[3],
+                "is_verified": u[4],
+            }
+        )
+
+    return {"users": user_list}
+
+
+@app.route("/delete_user/<int:user_id>")
+def delete_user(user_id):
+
+    if session.get("role") != "admin":
+        return "Access Denied"
+
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM users WHERE id=?", (user_id,))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin_dashboard"))
+
+
+@app.route("/toggle_role/<int:user_id>")
+def toggle_role(user_id):
+
+    if session.get("role") != "admin":
+        return "Access Denied"
+
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT role FROM users WHERE id=?", (user_id,))
+    current_role = cursor.fetchone()[0]
+
+    new_role = "admin" if current_role == "farmer" else "farmer"
+
+    cursor.execute("UPDATE users SET role=? WHERE id=?", (new_role, user_id))
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("admin_dashboard"))
+
+
 # @app.route("/predict")
 # def predict_page():
 #     if "user" not in session:
@@ -606,4 +787,4 @@ def reset_password(token):
 # ================================
 if __name__ == "__main__":
     init_db()
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=True, use_reloader=True)
