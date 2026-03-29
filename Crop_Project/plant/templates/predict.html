@@ -153,7 +153,25 @@
             {% endif %}
         </div>
         {% endif %}
+        <!-- 🌿 SMART FARMER ASSISTANT -->
+        <div class="farmer-card mt-3">
 
+            <div class="chat-header">
+                <div class="chat-avatar">🤖</div>
+                <div class="chat-title">
+                    <h5>कृषि मित्र</h5>
+                    <small>Smart Crop Guidance</small>
+                </div>
+            </div>
+
+            <div id="chatBox" class="chat-box mb-2"></div>
+
+            <div class="chat-input-wrapper">
+                <input type="text" id="chatInput" placeholder="Ask about treatment, fertilizer dose, prevention...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+
+        </div>
         {% else %}
 
         <div class="analysis-placeholder text-center">
@@ -210,6 +228,59 @@
 
     </div>
 </div>
+<script>
+    function sendMessage() {
+
+        const input = document.getElementById("chatInput");
+        const chatBox = document.getElementById("chatBox");
+        const message = input.value.trim();
+
+        if (!message) return;
+
+        // Show user message
+        const userDiv = document.createElement("div");
+        userDiv.className = "user-msg";
+        userDiv.textContent = message;
+        chatBox.appendChild(userDiv);
+
+        // Create typing indicator
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "bot-msg typing";
+
+        typingDiv.innerHTML = `
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    `;
+
+        chatBox.appendChild(typingDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        input.value = "";
+
+        fetch("/chatbot", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: message })
+        })
+            .then(response => response.json())
+            .then(data => {
+                setTimeout(() => {
+                    typingDiv.remove();
+
+                    const botDiv = document.createElement("div");
+                    botDiv.className = "bot-msg";
+                    botDiv.textContent = data.reply;
+
+                    chatBox.appendChild(botDiv);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+
+                }, 800);   // 800ms delay
+            });
+    }
+</script>
 {% endblock %}
 
 <!-- CROP LOADING OVERLAY -->

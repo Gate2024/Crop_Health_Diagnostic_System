@@ -1,150 +1,3 @@
-# from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-# import tensorflow as tf
-# import numpy as np
-# import os
-# import uuid
-# import json
-# import cv2
-
-# # ================================
-# # APP CONFIG
-# # ================================
-# app = Flask(__name__)
-
-# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-# MODEL_PATH = os.path.join(BASE_DIR, "models", "plant_disease.keras")
-# JSON_PATH = os.path.join(BASE_DIR, "models", "plant_disease.json")
-# UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploading_images")
-
-# app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-
-# if not os.path.exists(UPLOAD_FOLDER):
-#     os.makedirs(UPLOAD_FOLDER)
-
-# # ================================
-# # LOAD MODEL
-# # ================================
-# print("Loading Model...")
-# model = tf.keras.models.load_model(MODEL_PATH)
-# print("Model Loaded Successfully ✅")
-
-# # ================================
-# # LOAD JSON
-# # ================================
-# with open(JSON_PATH, "r") as file:
-#     plant_disease = json.load(file)
-
-# print("JSON Loaded Successfully ✅")
-
-# # ================================
-# # LEAF VALIDATION USING OPENCV
-# # ================================
-# def is_leaf(image_path):
-#     img = cv2.imread(image_path)
-
-#     if img is None:
-#         return False
-
-#     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-
-#     # Green color range in HSV
-#     lower_green = np.array([25, 40, 40])
-#     upper_green = np.array([90, 255, 255])
-
-#     mask = cv2.inRange(hsv, lower_green, upper_green)
-#     green_ratio = np.sum(mask > 0) / (img.shape[0] * img.shape[1])
-
-#     # If less than 8% green pixels → reject
-#     if green_ratio < 0.08:
-#         return False
-
-#     return True
-
-# # ================================
-# # IMAGE PREPROCESSING
-# # ================================
-# def preprocess_image(image_path):
-#     img = tf.keras.utils.load_img(image_path, target_size=(160, 160))
-#     img_array = tf.keras.utils.img_to_array(img)
-#     img_array = img_array / 255.0
-#     img_array = np.expand_dims(img_array, axis=0)
-#     return img_array
-
-# # ================================
-# # PREDICTION FUNCTION
-# # ================================
-# def predict_disease(image_path):
-
-#     # Step 1: Validate Leaf
-#     if not is_leaf(image_path):
-#         return {
-#             "name": "Invalid Image",
-#             "cause": "The uploaded image does not appear to be a plant leaf.",
-#             "cure": "Please upload a clear green plant leaf image.",
-#             "confidence": 0
-#         }
-
-#     # Step 2: Predict
-#     img = preprocess_image(image_path)
-#     prediction = model.predict(img)[0]
-
-#     predicted_index = int(np.argmax(prediction))
-#     confidence = round(float(prediction[predicted_index] * 100), 2)
-
-#     disease_info = plant_disease[predicted_index]
-
-#     return {
-#         "name": disease_info["name"],
-#         "cause": disease_info["cause"],
-#         "cure": disease_info["cure"],
-#         "confidence": confidence
-#     }
-
-# # ================================
-# # ROUTES
-# # ================================
-
-# @app.route("/")
-# def home():
-#     return render_template("home.html")
-
-# @app.route("/predict")
-# def predict_page():
-#     return render_template("predict.html")
-
-# @app.route("/upload/", methods=["POST"])
-# def upload():
-#     if "img" not in request.files:
-#         return redirect(url_for("predict_page"))
-
-#     file = request.files["img"]
-
-#     if file.filename == "":
-#         return redirect(url_for("predict_page"))
-
-#     unique_filename = f"{uuid.uuid4().hex}_{file.filename}"
-#     save_path = os.path.join(app.config["UPLOAD_FOLDER"], unique_filename)
-#     file.save(save_path)
-
-#     prediction = predict_disease(save_path)
-
-#     return render_template(
-#         "predict.html",
-#         result=True,
-#         imagepath=url_for("uploaded_file", filename=unique_filename),
-#         prediction=prediction
-#     )
-
-# @app.route("/uploading_images/<filename>")
-# def uploaded_file(filename):
-#     return send_from_directory(app.config["UPLOAD_FOLDER"], filename)
-
-# # ================================
-# # RUN SERVER
-# # ================================
-# if __name__ == "__main__":
-#     app.run(debug=True)
-
 from flask import Flask, render_template, request, redirect, url_for, session
 import tensorflow as tf
 import numpy as np
@@ -158,7 +11,10 @@ from werkzeug.security import generate_password_hash
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
-
+import difflib
+from datetime import datetime, timedelta
+import os
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 # ===============================
 # CREATE FLASK APP FIRST
 # ===============================
@@ -166,7 +22,19 @@ app = Flask(__name__)
 
 # ✅ Secret key MUST be after app creation
 app.secret_key = "crop_health_secret_key"
+# Default session lifetime (for Remember Me)
+app.permanent_session_lifetime = timedelta(days=7)
 
+@app.before_request
+def make_session_temporary():
+    if "user" in session:
+        expiry = session.get("expiry")
+
+        if expiry:
+            expiry_time = datetime.fromisoformat(expiry)
+            if datetime.utcnow() > expiry_time:
+                session.clear()
+                return redirect(url_for("login"))
 # ================= EMAIL CONFIGURATION =================
 
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
@@ -210,6 +78,22 @@ plant_disease = {item["name"]: item for item in plant_disease_list}
 
 # IMPORTANT: Match model class order
 class_names = sorted([item["name"] for item in plant_disease_list])
+
+# ==========================================
+# DISEASE KNOWLEDGE BASE (Chatbot)
+# ==========================================
+
+disease_knowledge = {
+    "Tomato - Septoria leaf spot": {
+        "treatment": "Apply Mancozeb or Chlorothalonil fungicide every 7-10 days.",
+        "organic": "Use Neem oil spray or copper-based fungicide.",
+        "prevention": "Avoid overhead watering and remove infected leaves immediately.",
+        "duration": "Improvement may be seen within 10-14 days.",
+    },
+    "Healthy": {
+        "general": "Your crop is healthy. Maintain balanced watering and nutrients."
+    },
+}
 
 print("JSON Loaded Successfully ✅")
 print("JSON Loaded Successfully ✅")
@@ -324,6 +208,21 @@ def init_db():
             role TEXT NOT NULL
         )
     """)
+    
+     # CONTACT MESSAGES TABLE
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS contact_messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        mobile TEXT,
+        email TEXT,
+        location TEXT,
+        crop TEXT,
+        problem_type TEXT,
+        message TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
 
     conn.commit()
     conn.close()
@@ -379,6 +278,14 @@ def upload():
     file.save(save_path)
 
     prediction = predict_disease(save_path)
+    session["last_disease"] = prediction["name"]
+
+    print("DEBUG session disease:", session["last_disease"])
+    print("DEBUG prediction name repr:", repr(prediction["name"]))
+    
+    print("DEBUG Disease Name:", prediction["name"])
+    # 🔥 Store predicted disease for chatbot context
+    session["last_disease"] = prediction["name"]
 
     return render_template(
         "predict.html",
@@ -404,38 +311,55 @@ def login():
 
         conn = sqlite3.connect("users.db", timeout=10, check_same_thread=False)
         cursor = conn.cursor()
-
         cursor.execute("SELECT * FROM users WHERE username=?", (username,))
         user = cursor.fetchone()
-
         conn.close()
 
+        # ✅ Check credentials
         if user and check_password_hash(user[3], password):
 
             # 🔐 Block unverified users
             if user[7] == 0:
                 return render_template(
-                    "login.html", error="Please verify your email before logging in."
+                    "login.html",
+                    error="Please verify your email before logging in."
                 )
 
+            # 🔄 Clear old session
+            session.clear()
+
+            # 🔐 Store session data
             session["user"] = user[1]
             session["role"] = user[4]
 
-            # 🔥 Role-based redirect
+            # ✅ Remember Me
+            remember = request.form.get("remember")
+
+            if remember:
+                expiry_time = datetime.utcnow() + timedelta(days=7)
+            else:
+                expiry_time = datetime.utcnow() + timedelta(minutes=30)
+
+            session["expiry"] = expiry_time.isoformat()
+
+            # 🔀 Role-based redirect
             if user[4] == "admin":
                 return redirect(url_for("admin_dashboard"))
             else:
                 return redirect(url_for("home"))
 
         else:
-            return render_template("login.html", error="Invalid Username or Password")
+            return render_template(
+                "login.html",
+                error="Invalid Username or Password"
+            )
 
+    # GET request
     return render_template("login.html")
-
 
 @app.route("/logout")
 def logout():
-    session.pop("user", None)
+    session.clear()
     return redirect(url_for("home"))
 
 
@@ -689,7 +613,28 @@ def admin_dashboard():
         role_filter=role_filter,
         status_filter=status_filter,
     )
+    
+@app.route("/admin/messages")
+def admin_messages():
 
+    # Only admin allowed
+    if "user" not in session or session.get("role") != "admin":
+        return "Access Denied"
+
+    conn = sqlite3.connect("users.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT id, name, mobile, crop, problem_type, message, created_at
+    FROM contact_messages
+    ORDER BY created_at DESC
+    """)
+
+    messages = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("admin_messages.html", messages=messages)
 
 @app.route("/admin-live-search")
 def admin_live_search():
@@ -777,6 +722,99 @@ def toggle_role(user_id):
     return redirect(url_for("admin_dashboard"))
 
 
+@app.route("/chatbot", methods=["POST"])
+def chatbot():
+
+    if "last_disease" not in session:
+        return {"reply": "Please upload and diagnose a leaf image first."}
+
+    user_message = request.json.get("message", "").lower()
+    disease = session["last_disease"]
+
+    disease_info = plant_disease.get(disease)
+
+    if not disease_info:
+        return {"reply": f"No information found for: {disease}"}
+
+    # 🔥 Define Intent Dictionary
+    intents = {
+        "treatment": ["treatment", "cure", "control", "manage", "solution"],
+        "cause": ["cause", "reason", "why"],
+        "fertilizer": ["fertilizer", "dose", "quantity", "spray", "how much"],
+        "prevention": ["prevent", "avoid", "protection"],
+        "improve": ["improve", "recover", "growth", "healthy"]
+    }
+
+    # 🔍 Fuzzy Intent Detection
+    detected_intent = None
+
+    for intent, keywords in intents.items():
+        for word in user_message.split():
+            match = difflib.get_close_matches(word, keywords, cutoff=0.7)
+            if match:
+                detected_intent = intent
+                break
+        if detected_intent:
+            break
+
+    # 🎯 Response Logic
+    if detected_intent == "treatment":
+        reply = disease_info.get("cure", "Treatment information not available.")
+
+    elif detected_intent == "cause":
+        reply = disease_info.get("cause", "Cause information not available.")
+
+    elif detected_intent == "fertilizer":
+        fertilizer = disease_info.get("fertilizer", "Fertilizer recommendation not available.")
+        reply = f"Recommended fertilizer: {fertilizer}. Please follow proper dosage instructions."
+
+    elif detected_intent == "prevention":
+        reply = "Remove infected leaves and avoid overwatering. Maintain proper spacing."
+
+    elif detected_intent == "improve":
+        reply = "Ensure balanced nutrients, sunlight, and regular monitoring."
+
+    else:
+        reply = (
+            f"This plant has {disease}. "
+            "You can ask about treatment, cause, fertilizer dose, or prevention."
+        )
+
+    return {"reply": reply}
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@app.route("/contact", methods=["GET","POST"])
+def contact():
+
+    if request.method == "POST":
+
+        name = request.form["name"]
+        mobile = request.form["mobile"]
+        email = request.form["email"]
+        location = request.form["location"]
+        crop = request.form["crop"]
+        problem_type = request.form["problem_type"]
+        message = request.form["message"]
+
+        conn = sqlite3.connect("users.db")
+        cursor = conn.cursor()
+
+        cursor.execute("""
+        INSERT INTO contact_messages
+        (name,mobile,email,location,crop,problem_type,message)
+        VALUES (?,?,?,?,?,?,?)
+        """,(name,mobile,email,location,crop,problem_type,message))
+
+        conn.commit()
+        conn.close()
+
+        return render_template("contact.html", success="Message sent successfully!")
+
+    return render_template("contact.html")
 # @app.route("/predict")
 # def predict_page():
 #     if "user" not in session:

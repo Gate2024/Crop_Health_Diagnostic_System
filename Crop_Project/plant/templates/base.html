@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Krushi | Crop Health Diagnostic System </title>
+  <title>कृषि मित्र | Crop Health Diagnostic System </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,7 +11,8 @@
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
@@ -23,7 +24,7 @@
     </div>
   </div>
 
-  <nav id="mainNavbar" class="navbar navbar-expand-lg fixed-top navbar-dark">
+  <nav id="mainNavbar" class="navbar navbar-expand-lg fixed-top navbar-custom">
     <div class="container">
 
       <!-- Logo -->
@@ -57,6 +58,13 @@
 
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('predict_page') }}">Diagnosis</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('about') }}">About</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('contact') }}">Contact</a>
           </li>
 
           {% if session.get('user') %}
@@ -112,81 +120,81 @@
     }
   </script>
 
-  <-- Camera Script -->
-    <script>
-      let video = document.getElementById("video");
-      let canvas = document.getElementById("canvas");
-      let captureBtn = document.getElementById("captureBtn");
-      let stopBtn = document.getElementById("stopBtn");
-      let uploadInput = document.getElementById("uploadInput");
 
-      let cameraStream = null;
+  <script>
+    let video = document.getElementById("video");
+    let canvas = document.getElementById("canvas");
+    let captureBtn = document.getElementById("captureBtn");
+    let stopBtn = document.getElementById("stopBtn");
+    let uploadInput = document.getElementById("uploadInput");
 
-      function startCamera() {
-        navigator.mediaDevices.getUserMedia({ video: true })
-          .then(stream => {
-            cameraStream = stream;
-            video.srcObject = stream;
-            video.style.display = "block";
-            captureBtn.style.display = "block";
-            stopBtn.style.display = "block";
-          })
-          .catch(err => {
-            alert("Camera access denied or not supported.");
-          });
-      }
+    let cameraStream = null;
 
-      function captureImage() {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-
-        canvas.toBlob(function (blob) {
-          let file = new File([blob], "captured.png", { type: "image/png" });
-          let dataTransfer = new DataTransfer();
-          dataTransfer.items.add(file);
-          uploadInput.files = dataTransfer.files;
-          previewImage(uploadInput);
+    function startCamera() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          cameraStream = stream;
+          video.srcObject = stream;
+          video.style.display = "block";
+          captureBtn.style.display = "block";
+          stopBtn.style.display = "block";
+        })
+        .catch(err => {
+          alert("Camera access denied or not supported.");
         });
+    }
 
-        stopCamera();
-      }
+    function captureImage() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
 
-      function stopCamera() {
-        if (cameraStream) {
-          cameraStream.getTracks().forEach(track => track.stop());
-          cameraStream = null;
-        }
-        video.srcObject = null;
-        video.style.display = "none";
-        captureBtn.style.display = "none";
-        stopBtn.style.display = "none";
-      }
-    </script>
-
-    <script>
-      window.addEventListener("scroll", function () {
-        const navbar = document.getElementById("mainNavbar");
-
-        if (window.scrollY > 50) {
-          navbar.classList.add("scrolled");
-        } else {
-          navbar.classList.remove("scrolled");
-        }
+      canvas.toBlob(function (blob) {
+        let file = new File([blob], "captured.png", { type: "image/png" });
+        let dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        uploadInput.files = dataTransfer.files;
+        previewImage(uploadInput);
       });
-    </script>
 
-    <script>
-      window.addEventListener("load", function () {
-        const loader = document.getElementById("globalLoader");
-        loader.style.opacity = "0";
-        setTimeout(() => {
-          loader.style.display = "none";
-        }, 400);
-      });
-    </script>
-    <!-- For Dynsmic Progress Bar -->
-    <!-- <script>
+      stopCamera();
+    }
+
+    function stopCamera() {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+      }
+      video.srcObject = null;
+      video.style.display = "none";
+      captureBtn.style.display = "none";
+      stopBtn.style.display = "none";
+    }
+  </script>
+
+  <script>
+    window.addEventListener("scroll", function () {
+      let navbar = document.getElementById("mainNavbar");
+
+      if (window.scrollY > 50) {
+        navbar.classList.add("scrolled");
+      } else {
+        navbar.classList.remove("scrolled");
+      }
+    });
+  </script>
+
+  <script>
+    window.addEventListener("load", function () {
+      const loader = document.getElementById("globalLoader");
+      loader.style.opacity = "0";
+      setTimeout(() => {
+        loader.style.display = "none";
+      }, 400);
+    });
+  </script>
+  <!-- For Dynsmic Progress Bar -->
+  <!-- <script>
         function showLoader() {
           document.getElementById("loadingOverlay").style.display = "flex";
 
@@ -215,41 +223,41 @@
           }, 40);
         }
       </script> -->
-    <script>
-      function showLeafLoader() {
+  <script>
+    function showLeafLoader() {
 
-        document.getElementById("leafLoaderOverlay").style.display = "flex";
+      document.getElementById("leafLoaderOverlay").style.display = "flex";
 
-        let percent = 0;
-        const fill = document.getElementById("leafFill");
-        const text = document.getElementById("percentText");
+      let percent = 0;
+      const fill = document.getElementById("leafFill");
+      const text = document.getElementById("percentText");
 
-        const interval = setInterval(() => {
+      const interval = setInterval(() => {
 
-          percent++;
+        percent++;
 
-          fill.style.height = percent + "%";
-          text.innerText = percent + "%";
+        fill.style.height = percent + "%";
+        text.innerText = percent + "%";
 
-          if (percent >= 100) {
-            clearInterval(interval);
-          }
+        if (percent >= 100) {
+          clearInterval(interval);
+        }
 
-        }, 25);
-      }
-    </script>
-    <!-- Global Loader Script -->
-    <script>
-      window.addEventListener("load", function () {
-        const loader = document.getElementById("globalLoader");
-        loader.style.opacity = "0";
-        setTimeout(() => {
-          loader.style.display = "none";
-        }, 400);
-      });
-    </script>
-    <!-- Show Global Loader on Link/Button Click -->
-    <!-- <script>
+      }, 25);
+    }
+  </script>
+  <!-- Global Loader Script -->
+  <script>
+    window.addEventListener("load", function () {
+      const loader = document.getElementById("globalLoader");
+      loader.style.opacity = "0";
+      setTimeout(() => {
+        loader.style.display = "none";
+      }, 400);
+    });
+  </script>
+  <!-- Show Global Loader on Link/Button Click -->
+  <!-- <script>
       document.querySelectorAll("a, button").forEach(element => {
         element.addEventListener("click", function () {
           document.getElementById("globalLoader").style.display = "flex";
@@ -257,59 +265,93 @@
         });
       });
     </script> -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <div class="social-sidebar">
+    <a href="https://www.instagram.com/mitrakrushi_26/" class="social-item"><i class="fab fa-instagram"></i></a>
+    <a href="https://www.facebook.com/profile.php?id=61577452363019" class="social-item"><i class="fab fa-facebook-f"></i></a>
+    <a href="https://x.com/KrushiM2026" class="social-item"><i class="fab fa-twitter"></i></a>
+    <a href="http://www.youtube.com/@KrushiMitra2026" class="social-item"><i class="fab fa-youtube"></i></a>
+    <a href="https://www.linkedin.com/in/krushi-mitra-939bb23ba/" class="social-item"><i class="fab fa-linkedin-in"></i></a>
+  </div>
 </body>
+<!-- ================= SOCIAL SIDEBAR ================= -->
+<!-- <div class="social-sidebar">
+
+  <a href="#" class="social-item instagram">
+    <i class="fab fa-instagram"></i>
+    <span>Instagram</span>
+  </a>
+
+  <a href="#" class="social-item facebook">
+    <i class="fab fa-facebook-f"></i>
+    <span>Facebook</span>
+  </a>
+
+  <a href="#" class="social-item youtube">
+    <i class="fab fa-youtube"></i>
+    <span>YouTube</span>
+  </a>
+
+  <a href="#" class="social-item linkedin">
+    <i class="fab fa-linkedin-in"></i>
+    <span>LinkedIn</span>
+  </a>
+
+</div> -->
 <!-- PROFESSIONAL FOOTER -->
-<footer class="footer-modern mt-5">
+<!-- ================= FOOTER ================= -->
+<footer class="pro-footer">
 
-  <div class="container py-5">
-    <div class="row">
+  <!-- CONTENT -->
+  <div class="footer-content">
 
-      <!-- About -->
-      <div class="col-md-4 mb-4">
-        <h5 class="footer-title">🌿 कृषि मित्र </h5>
-        <p class="footer-text">
-          AI-powered crop intelligence platform designed to detect plant
-          diseases using deep learning and image analysis.
-        </p>
-      </div>
+    <!-- ABOUT -->
+    <div class="footer-box">
+      <div class="footer-logo">🌿 कृषि मित्र</div>
+      <p>
+        AI-powered crop intelligence platform designed to detect plant diseases
+        using deep learning and image analysis.
+      </p>
+    </div>
 
-      <!-- Quick Links -->
-      <div class="col-md-3 mb-4">
-        <h6 class="footer-heading">Quick Links</h6>
-        <ul class="footer-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/predict">Diagnosis</a></li>
-          <li><a href="/login">Login</a></li>
-          <li><a href="#">About Project</a></li>
-          <li><a href="#">Contact</a></li>
-        </ul>
-      </div>
+    <!-- QUICK LINKS -->
+    <div class="footer-box">
+      <h4>Quick Links</h4>
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('predict_page') }}">Diagnosis</a>
+      <a href="{{ url_for('login') }}">Login</a>
+      <a href="{{ url_for('about') }}">About Project</a>
+      <a href="{{ url_for('contact') }}">Contact</a>
+    </div>
 
-      <!-- Contact -->
-      <div class="col-md-3 mb-4">
-        <h6 class="footer-heading">Contact</h6>
-        <p class="footer-text mb-1">📍 Pune, Maharashtra</p>
-        <p class="footer-text mb-1">📧 krushiai@gmail.com</p>
-        <p class="footer-text">📞 +91 98765 43210</p>
-      </div>
+    <!-- CONTACT INFO -->
+    <!-- CONTACT -->
+    <div class="footer-box">
+      <h4>Contact</h4>
+      <p>📍 Chhatrapati Sambhajinagar, Maharashtra</p>
+      <p>📧 krushimitraai2026@gmail.com</p>
+      <p>📞 7030503039</p>
+    </div>
+    <!-- SOCIAL -->
+    <div class="footer-box">
+      <h4>Social Connect</h4>
 
-      <!-- Social -->
-      <div class="col-md-2 mb-4">
-        <h6 class="footer-heading">Follow Us</h6>
-        <div class="footer-social">
-          <a href="#"><i class="bi bi-linkedin"></i></a>
-          <a href="#"><i class="bi bi-github"></i></a>
-          <a href="#"><i class="bi bi-twitter-x"></i></a>
-        </div>
+      <div class="footer-icons">
+        <a href="https://www.instagram.com/mitrakrushi_26/"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=61577452363019"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://x.com/KrushiM2026"><i class="fab fa-twitter"></i></a>
+        <a href="http://www.youtube.com/@KrushiMitra2026"><i class="fab fa-youtube"></i></a>
+        <a href="https://www.linkedin.com/in/krushi-mitra-939bb23ba/"><i class="fab fa-linkedin-in"></i></a>
       </div>
 
     </div>
+
   </div>
 
-  <!-- Bottom Bar -->
-  <div class="footer-bottom text-center py-3">
-    © 2026 कृषि मित्र | Final Year AI/ML Project | Built with ❤️
+  <!-- BOTTOM -->
+  <div class="footer-bottom">
+    © 2026 कृषि मित्र | All rights reserved.
   </div>
 
 </footer>
