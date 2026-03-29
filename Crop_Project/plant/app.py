@@ -51,7 +51,7 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 # =======================================================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "plant_disease.keras")
+MODEL_PATH = os.path.join(BASE_DIR, "models", "model.h5")
 JSON_PATH = os.path.join(BASE_DIR, "models", "plant_disease.json")
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploading_images")
 
