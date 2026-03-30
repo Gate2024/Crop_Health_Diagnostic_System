@@ -14,6 +14,8 @@ from itsdangerous import URLSafeTimedSerializer
 import difflib
 from datetime import datetime, timedelta
 import os
+import gdown
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 # ===============================
 # CREATE FLASK APP FIRST
@@ -50,15 +52,29 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 
 # =======================================================
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 MODEL_PATH = os.path.join(BASE_DIR, "models", "model.h5")
 JSON_PATH = os.path.join(BASE_DIR, "models", "plant_disease.json")
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploading_images")
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+# Ensure folders exist
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
+
+if not os.path.exists(os.path.join(BASE_DIR, "models")):
+    os.makedirs(os.path.join(BASE_DIR, "models"))
+
+# ================================
+# DOWNLOAD MODEL IF NOT EXISTS
+# ================================
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model...")
+    url = "https://drive.google.com/uc?id=1hzmhJZP2-j0ZFglYCUIb8qTOSYthDdxj"
+    gdown.download(url, MODEL_PATH, quiet=False)
 
 # ================================
 # LOAD MODEL
